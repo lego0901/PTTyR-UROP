@@ -26,3 +26,16 @@ Tensor shape 분석 언어 명세와, 이를 위한 자료들을 업로드하겠
 
 
 
+라이브러리 파서 사용법
+
+- 핵심은 `src/crawler/table_maker.py` 입니다.
+
+  - `PROJECT_URLS` 리스트에 있는 주소의 코드들을 읽어와서 데이터베이스 테이블을 완성합니다.
+
+    ```bash
+    conda activate pttyr
+    python3 src/crawler/table_maker.py
+    ```
+
+  - 정렬하여 출력하는건 나중에 만들겠습니다.
+

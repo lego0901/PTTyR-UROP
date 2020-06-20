@@ -2,11 +2,6 @@ import os
 import torch
 
 
-INHERITANCE_KEYWORD = ['Module', 'nn.Module', 'torch.nn.Module']
-TORCH_FOLDER = os.path.dirname(torch.__file__)
-BUILTIN_FILE = TORCH_FOLDER + '/__init__.pyi'
-
-
 # Fetch all .py file in the torch library folder.
 def recursively_add_py(folder, pyfiles=[]):
     filenames = os.listdir(folder)
@@ -49,7 +44,7 @@ def parse_class(filename, edges):
 
 # Run DFS from the inheritance directed graph
 # Starting nodes are 'Module', 'nn.Module', 'torch.nn.Module'
-def subclass_of_module(edges):
+def subclass_of_module(edges, inheritance_keywords):
     vst = set([])
     def dfs(a):
         vst.add(a)
@@ -57,7 +52,7 @@ def subclass_of_module(edges):
             for b in edges[a]:
                 if b not in vst:
                     dfs(b)
-    for m in INHERITANCE_KEYWORD:
+    for m in inheritance_keywords:
         dfs(m)
     return vst
 
@@ -79,17 +74,10 @@ def parse_builtins(builtin_file):
     return builtins
 
 
-def parse_whole_libraries(torch_folder, builtin_file):
+# Parse whole libraries folders
+def parse_whole_libraries(torch_folder, builtin_file, inheritance_keywords):
     pyfiles = recursively_add_py(torch_folder)
     edges = dict()
     for pyfile in pyfiles:
         parse_class(pyfile, edges)
-    return subclass_of_module(edges), parse_builtins(builtin_file)
-
-
-
-module_subclasses, builtins = parse_whole_libraries(TORCH_FOLDER, BUILTIN_FILE)
-print(module_subclasses)
-print(builtins)
-
-print(len(module_subclasses), len(builtins))
+    return subclass_of_module(edges, inheritance_keywords), parse_builtins(builtin_file)
