@@ -5,12 +5,15 @@ import pygit2
 import lib_crawler
 
 
-CLONED_NAME = '.cloned_repo'
+CLONED_NAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.cloned_repo')
 
 
-def parse_github_repository(project_url, database):
+def parse_github_repository(project_url, database, remove_cloned=True):
+    if os.path.isdir(CLONED_NAME):
+        shutil.rmtree(CLONED_NAME)
     _ = pygit2.clone_repository(project_url, CLONED_NAME)
-    pyfiles = lib_crawler.recursively_add_py(CLONED_NAME)
-    for pyfile in pyfiles:
+    pyfiless = lib_crawler.recursively_add_py(CLONED_NAME)
+    for pyfile in pyfiless:
         database.update(pyfile)
-    shutil.rmtree(CLONED_NAME)
+    if remove_cloned:
+        shutil.rmtree(CLONED_NAME)
