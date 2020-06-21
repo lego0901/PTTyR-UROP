@@ -81,4 +81,5 @@ def parse_whole_libraries(torch_folder, builtin_file, inheritance_keywords):
     edges = dict()
     for pyfile in pyfiles:
         parse_class(pyfile, edges)
-    return subclass_of_module(edges, inheritance_keywords), parse_builtins(builtin_file)
+    return subclass_of_module(edges, inheritance_keywords),\
+         parse_builtins(builtin_file)
