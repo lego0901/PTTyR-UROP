@@ -26,3 +26,4 @@ for project_url in PROJECT_URLS:
 
 print('Saving as database.csv')
 database.save_csv('database.csv')
+# database.save_csv('database.csv', no_occurrences=True)
