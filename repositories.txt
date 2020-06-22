@@ -1,2 +1,3 @@
-https://github.com/kuangliu/pytorch-cifar
 https://github.com/pytorch/vision
+https://github.com/pytorch/text
+https://github.com/pytorch/audio
