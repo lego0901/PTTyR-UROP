@@ -2,6 +2,13 @@ import os
 import torch
 
 
+def extension_of(file_name):
+    dot = file_name.rfind('.')
+    if dot == -1:
+        return ''
+    return file_name[dot+1:]
+
+
 # Fetch all .py file in the torch library folder.
 def recursively_add_py(folder):
     pyfiles = []
@@ -10,8 +17,10 @@ def recursively_add_py(folder):
         abs_filename = folder + '/' + filename
         if os.path.isdir(abs_filename):
             pyfiles += recursively_add_py(abs_filename)
-        elif len(filename) >= 3 and filename[-3:] == '.py':
-            pyfiles.append(abs_filename)
+        else:
+            ext = extension_of(filename)
+            if ext == 'py' or ext == 'ipynb':
+                pyfiles.append(abs_filename)
     return pyfiles
 
 
