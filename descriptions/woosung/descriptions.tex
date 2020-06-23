@@ -1,0 +1,289 @@
+
+%\documentclass[a4paper,11pt]{article}
+\documentclass{article}
+
+\usepackage[hangul]{kotex}
+\usepackage{woosung_hw}
+\usepackage{woosung_math}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{bussproofs}
+
+%\usepackage[bitstream-charter]{mathdesign}
+%\usepackage[T1]{fontenc}
+
+\setlength{\hoffset}{-25pt}
+\addtolength{\textwidth}{50pt}
+\setlength{\voffset}{-60pt}
+\addtolength{\textheight}{130pt}
+
+\newcommand{\w}[1]{\ensuremath{\textit{#1}}}
+\newcommand{\x}{\times}
+\newcommand{\rar}{\rightarrow}
+\newcommand{\Rar}{\Rightarrow}
+\newcommand{\U}{\cup}
+\newcommand{\join}{\sqcup}
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\mtt}[1]{\mathtt{#1}}
+\newcommand{\bigspace}{\,\,\,\,\,\,\,\,}
+
+\newcommand{\op}[2]{\mtt{#1(}#2\mtt{)}}
+\newcommand{\conc}{\mtt{@}}
+\newcommand{\ind}[1]{\mtt{[}#1\mtt{]}}
+\newcommand{\indr}[2]{\mtt{[}#1\mtt{:}#2\mtt{]}}
+
+
+\begin{document}
+
+\subsection*{\texttt{torch.Tensor.size}}%{{{
+%%% Not Sure
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\op{size}{} \Rar shapeToTuple(e), c
+  }
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\op{size}{n} \Rar e\ind{n+1}, c \cup c'
+  }
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.tensor}}%{{{
+\begin{align*}
+  \frac
+  {
+    \sigma \vdash {E} \Rar e, c
+  }
+  {
+    \sigma \vdash \op{tensor}{E} \Rar e, c
+  }
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.Tensor.shape}}%{{{
+%%% Not Sure
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\mtt{shape} \Rar shapeToTuple(e), c
+  }
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.range}}%{{{
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      d \neq 0\\
+      (e-s)/d > 0
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{range}{s, e, d} \Rar (1+\lfloor (e-s)/d \rfloor), \emptyset
+  }
+  \tag*{Default: $s = 0, d = 1$}
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.Tensor.item}}%{{{
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      c' = \{ (k = 1) \land (e[1] = 1) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\op{item}{} \Rar (), c \cup c'
+  }
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.split}}%{{{
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = (n) \conc e\indr{2}{k} \\
+      e_2 = (n) \conc e\indr{2}{k} \\
+      \bigspace \cdots \\
+      e_{l-1} = (n) \conc e\indr{2}{k} \\
+      e_l = (n') \conc e\indr{2}{k}\bigspace
+        \text{where $e \ind{1} = n(l-1) + n'$, $0 < n' \leq n$} \\
+      c' = \{ (k \geq 1) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{split}{E, n} \Rar (e_1, e_2, \dots, e_l), c \cup c'
+  }
+  \tag*{$l$-원소 tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = (n_1) \conc e\indr{2}{k} \\
+      e_2 = (n_2) \conc e\indr{2}{k} \\
+      \bigspace \cdots \\
+      e_l = (n_l) \conc e\indr{2}{k} \\
+      c' = \{ (k \geq 1) \land (e \ind{1} = n_1 + n_2 + \cdots + n_l) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{split}{E, \ind{n_1, n_2, \dots, n_l}}
+      \Rar (e_1, e_2, \dots, e_l), c \cup c'
+  }
+  \tag*{$l$-원소 tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = e\indr{1}{x} \conc (n) \conc e\indr{x+2}{k} \\
+      e_2 = e\indr{1}{x} \conc (n) \conc e\indr{x+2}{k} \\
+      \bigspace \cdots \\
+      e_{l-1} = e\indr{1}{x} \conc (n) \conc e\indr{x+2}{k} \\
+      e_l = e\indr{1}{x} \conc (n') \conc e\indr{x+2}{k} \bigspace
+        \text{where $e \ind{1} = n(l-1) + n'$, $0 < n' \leq n$} \\
+      c' = \{ (k \geq 1) \land (0 \leq x < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{split}{E, n, x} \Rar (e_1, e_2, \dots, e_l), c \cup c'
+  }
+  \tag*{$l$-원소 tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = e\indr{1}{x} \conc (n_1) \conc e\indr{x+2}{k} \\
+      e_2 = e\indr{1}{x} \conc (n_2) \conc e\indr{x+2}{k} \\
+      \bigspace \cdots \\
+      e_l = e\indr{1}{x} \conc (n_l) \conc e\indr{x+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq x < k) \land
+        (e \ind{x+1} = n_1 + n_2 + \cdots + n_l) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{split}{E, \ind{n_1, n_2, \dots, n_l}, x}
+      \Rar (e_1, e_2, \dots, e_l), c \cup c'
+  }
+  \tag*{$l$-원소 tuple 형태로 반환}
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.zeros}, \texttt{torch.rand}, \texttt{torch.randn}}%{{{
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{zeros}, \mtt{rand}, \mtt{randn}\},
+  \bigspace
+  \frac
+  {
+  }
+  {
+    \sigma \vdash \op{ft}{t_1, t_2, \dots, t_l} \Rar (t_1, t_2, \dots, t_l),
+      \emptyset
+  }
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.max}}%{{{
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar \_, c
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{max}{E} \Rar (), c
+  }
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{max}{E, n} \Rar (e', e'), c \cup c'
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc (1) \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{max}{E, n, True} \Rar (e', e'), c \cup c'
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \sigma \vdash \op{max}{E, n} \Rar (e, e), c
+  }
+  {
+    \sigma \vdash \op{max}{E, n, False} \Rar (e, e), c
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E_1 \Rar e_1, c_1 \\
+      \sigma \vdash E_2 \Rar e_2, c_2
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{max}{E_1, E_2} \Rar broadcast(e_1, e_2),
+      c_1 \cup c_2 \cup broadcastable(e_1, e_2)
+  }
+\end{align*}%}}}
+
+
+\end{document}
