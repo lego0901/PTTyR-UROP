@@ -19,6 +19,7 @@
 
 \newcommand{\w}[1]{\ensuremath{\textit{#1}}}
 \newcommand{\x}{\times}
+\newcommand{\rem}{\mtt{\%}}
 \newcommand{\rar}{\rightarrow}
 \newcommand{\Rar}{\Rightarrow}
 \newcommand{\U}{\cup}
@@ -28,6 +29,7 @@
 \newcommand{\bigspace}{\,\,\,\,\,\,\,\,}
 
 \newcommand{\op}[2]{\mtt{#1(}#2\mtt{)}}
+\newcommand{\module}[3]{\mtt{#1(}#2\mtt{)(}#3\mtt{)}}
 \newcommand{\conc}{\mtt{@}}
 \newcommand{\ind}[1]{\mtt{[}#1\mtt{]}}
 \newcommand{\indr}[2]{\mtt{[}#1\mtt{:}#2\mtt{]}}
@@ -215,6 +217,85 @@
   }
 \end{align*}%}}}
 
+\subsection*{\texttt{torch.mode}}%{{{
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{k-1} \\
+      c' = \{ (k \geq 1) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{mode}{E} \Rar (e', e'), c \cup c'
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{mode}{E, n} \Rar (e', e'), c \cup c'
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc (1) \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{mode}{E, n, True} \Rar (e', e'), c \cup c'
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \sigma \vdash \op{mode}{E, n} \Rar (e, e), c
+  }
+  {
+    \sigma \vdash \op{mode}{E, n, False} \Rar (e, e), c
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.randint}}%{{{
+\begin{align*}
+  \frac
+  {
+  }
+  {
+    \sigma \vdash \op{randint}{low, high, e_s} \Rar e_s, \emptyset
+  }
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+  }
+  {
+    \sigma \vdash \op{randint}{high, e_s} \Rar e_s, \emptyset
+  }
+\end{align*}%}}}
+
 \subsection*{\texttt{torch.max}}%{{{
 \begin{align*}
   \frac
@@ -283,6 +364,38 @@
     \sigma \vdash \op{max}{E_1, E_2} \Rar broadcast(e_1, e_2),
       c_1 \cup c_2 \cup broadcastable(e_1, e_2)
   }
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.nn.Conv2d}}%{{{
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      w = \left\lfloor \frac{e[3] + 2 \x padding \ind{0} - dilation \ind{0}
+        \x (kernel\_size \ind{0} - 1) - 1}{stride \ind{0}} \right\rfloor + 1 \\
+      h = \left\lfloor \frac{e[4] + 2 \x padding \ind{1} - dilation \ind{1}
+        \x (kernel\_size \ind{1} - 1) - 1}{stride \ind{1}} \right\rfloor + 1 \\
+      e' = (e[1], out, w, h) \\
+      c_{dim} = \{ (k = 4) \} \\
+      c_w = \{ (kernel\_size\ind{0} \leq e[3] + 2 \x padding \ind{0} \} \\
+      c_h = \{ (kernel\_size\ind{1} \leq e[4] + 2 \x padding \ind{1} \} \\
+      c_{group} = \{ (in \rem groups = 0) \land (out \rem groups = 0) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \module{Conv2d}{in, out, kernel\_size, stride, padding,
+      dilation, groups}{E} \Rar e', c \cup c_{dim} \cup c_w \cup c_h \cup
+      c_{group}
+  } \\
+  \\
+  \text{default values: $stride=1, padding=0, dilation=1, groups=1$} \\
+  \text{$kernel\_size, stride, padding, dilation$는 가로-세로별 2-tuple로도 들어갈
+  수 있음} \\
+  \text{이 경우를 위해 $stride\ind{0}, stride\ind{1}$으로 표기함} \\
+  \text{만일 $stride$가 튜플이 아닌 스칼라라면 $stride\ind{0}$ 또는 $\ind{1}$은
+    $stride$ 값 자체를 의미}
 \end{align*}%}}}
 
 
