@@ -33,6 +33,7 @@
 \newcommand{\conc}{\mtt{@}}
 \newcommand{\ind}[1]{\mtt{[}#1\mtt{]}}
 \newcommand{\indr}[2]{\mtt{[}#1\mtt{:}#2\mtt{]}}
+\newcommand{\ifs}[3]{\mtt{if}\,\,#1\,\,\mtt{then}\,\,#2\,\,\mtt{else}\,\,#3}
 
 
 \begin{document}
@@ -112,7 +113,7 @@
     \begin{array}{l}
       \sigma \vdash E \Rar e, c \\
       k = \op{rank}{e} \\
-      c' = \{ (k = 1) \land (e[1] = 1) \}
+      c' = \{ (\forall i = 1, 2, \dots, k,\: e[i] = 1) \}
     \end{array}
   }
   {
@@ -224,12 +225,11 @@
     \begin{array}{l}
       \sigma \vdash E \Rar e, c \\
       k = \op{rank}{e} \\
-      e' = e \indr{1}{k-1} \\
-      c' = \{ (k \geq 1) \}
+      e' = \ifs{k = 0}{e}{e \indr{1}{k-1}} \\
     \end{array}
   }
   {
-    \sigma \vdash \op{mode}{E} \Rar (e', e'), c \cup c'
+    \sigma \vdash \op{mode}{E} \Rar (e', e'), c
   }
   \tag*{tuple 형태로 반환}
 \end{align*}
@@ -296,8 +296,10 @@
   }
 \end{align*}%}}}
 
-\subsection*{\texttt{torch.max}}%{{{
+\subsection*{\texttt{torch.max}, \texttt{torch.min}}%{{{
 \begin{align*}
+  \forall \mtt{ft} \in \{\mtt{min}, \mtt{max}\},
+  \bigspace
   \frac
   {
     \begin{array}{l}
@@ -305,11 +307,13 @@
     \end{array}
   }
   {
-    \sigma \vdash \op{max}{E} \Rar (), c
+    \sigma \vdash \op{ft}{E} \Rar (), c
   }
 \end{align*}
 
 \begin{align*}
+  \forall \mtt{ft} \in \{\mtt{min}, \mtt{max}\},
+  \bigspace
   \frac
   {
     \begin{array}{l}
@@ -320,12 +324,14 @@
     \end{array}
   }
   {
-    \sigma \vdash \op{max}{E, n} \Rar (e', e'), c \cup c'
+    \sigma \vdash \op{ft}{E, n} \Rar (e', e'), c \cup c'
   }
   \tag*{tuple 형태로 반환}
 \end{align*}
 
 \begin{align*}
+  \forall \mtt{ft} \in \{\mtt{min}, \mtt{max}\},
+  \bigspace
   \frac
   {
     \begin{array}{l}
@@ -336,23 +342,27 @@
     \end{array}
   }
   {
-    \sigma \vdash \op{max}{E, n, True} \Rar (e', e'), c \cup c'
+    \sigma \vdash \op{ft}{E, n, True} \Rar (e', e'), c \cup c'
   }
   \tag*{tuple 형태로 반환}
 \end{align*}
 
 \begin{align*}
+  \forall \mtt{ft} \in \{\mtt{min}, \mtt{max}\},
+  \bigspace
   \frac
   {
-    \sigma \vdash \op{max}{E, n} \Rar (e, e), c
+    \sigma \vdash \op{ft}{E, n} \Rar (e, e), c
   }
   {
-    \sigma \vdash \op{max}{E, n, False} \Rar (e, e), c
+    \sigma \vdash \op{ft}{E, n, False} \Rar (e, e), c
   }
   \tag*{tuple 형태로 반환}
 \end{align*}
 
 \begin{align*}
+  \forall \mtt{ft} \in \{\mtt{min}, \mtt{max}\},
+  \bigspace
   \frac
   {
     \begin{array}{l}
@@ -361,8 +371,111 @@
     \end{array}
   }
   {
-    \sigma \vdash \op{max}{E_1, E_2} \Rar broadcast(e_1, e_2),
+    \sigma \vdash \op{ft}{E_1, E_2} \Rar broadcast(e_1, e_2),
       c_1 \cup c_2 \cup broadcastable(e_1, e_2)
+  }
+\end{align*}%}}}
+
+\subsection*{\texttt{torch.sum}, \texttt{torch.mean}}%{{{
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{sum}, \mtt{mean}\},
+  \bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar \_, c
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{ft}{E} \Rar (), c
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{sum}, \mtt{mean}\},
+  \bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{ft}{E, n} \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{sum}, \mtt{mean}\},
+  \bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = \ifs{1 \in \{n_1, n_2, \dots, n_r\}}{()}{(e[1])} \\
+      e_2 = \ifs{2 \in \{n_1, n_2, \dots, n_r\}}{()}{(e[2])} \\
+      \bigspace \cdots \\
+      e_k = \ifs{k \in \{n_1, n_2, \dots, n_r\}}{()}{(e[k])} \\
+      e' = e_1 \conc e_2 \conc \cdots \conc e_k \\
+      c' = \{ (k \geq 1) \land (\forall i=1, 2, \dots, r,\: 0 \leq n_i < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{ft}{E, (n_1, n_2, \dots, n_r)} \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{sum}, \mtt{mean}\},
+  \bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc (1) \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{ft}{E, n, True} \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{sum}, \mtt{mean}\},
+  \bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = \ifs{1 \in \{n_1, n_2, \dots, n_r\}}{(1)}{(e[1])} \\
+      e_2 = \ifs{2 \in \{n_1, n_2, \dots, n_r\}}{(1)}{(e[2])} \\
+      \bigspace \cdots \\
+      e_k = \ifs{k \in \{n_1, n_2, \dots, n_r\}}{(1)}{(e[k])} \\
+      e' = e_1 \conc e_2 \conc \cdots \conc e_k \\
+      c' = \{ (k \geq 1) \land (\forall i=1, 2, \dots, r,\: 0 \leq n_i < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{ft}{E, (n_1, n_2, \dots, n_r), True} \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{sum}, \mtt{mean}\},
+  \bigspace
+  \frac
+  {
+    \sigma \vdash \op{ft}{E, X} \Rar e, c
+  }
+  {
+    \sigma \vdash \op{ft}{E, X, False} \Rar e, c
   }
 \end{align*}%}}}
 
@@ -379,8 +492,8 @@
         \x (kernel\_size \ind{1} - 1) - 1}{stride \ind{1}} \right\rfloor + 1 \\
       e' = (e[1], out, w, h) \\
       c_{dim} = \{ (k = 4) \} \\
-      c_w = \{ (kernel\_size\ind{0} \leq e[3] + 2 \x padding \ind{0} \} \\
-      c_h = \{ (kernel\_size\ind{1} \leq e[4] + 2 \x padding \ind{1} \} \\
+      c_w = \{ (kernel\_size\ind{0} \leq e[3] + 2 \x padding \ind{0}) \} \\
+      c_h = \{ (kernel\_size\ind{1} \leq e[4] + 2 \x padding \ind{1}) \} \\
       c_{group} = \{ (in \rem groups = 0) \land (out \rem groups = 0) \}
     \end{array}
   }
@@ -390,7 +503,8 @@
       c_{group}
   } \\
   \\
-  \text{default values: $stride=1, padding=0, dilation=1, groups=1$} \\
+  \text{default values(when omitted): $stride=1, padding=0, dilation=1,
+    groups=1$} \\
   \text{$kernel\_size, stride, padding, dilation$는 가로-세로별 2-tuple로도 들어갈
   수 있음} \\
   \text{이 경우를 위해 $stride\ind{0}, stride\ind{1}$으로 표기함} \\
