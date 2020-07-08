@@ -1,85 +1,7 @@
 
-%\documentclass[a4paper,11pt]{article}
 \documentclass{article}
 
-\usepackage[hangul]{kotex}
-\usepackage{enumitem}
-\usepackage{mathtools}
-\usepackage{stmaryrd}
-\usepackage{float}
-\usepackage{multirow}
-\usepackage{array}
-\usepackage[margin=1in, bottom=1in]{geometry}
-
-%\usepackage[bitstream-charter]{mathdesign}
-%\usepackage[T1]{fontenc}
-
-\setlength{\hoffset}{-25pt}
-\addtolength{\textwidth}{50pt}
-\setlength{\voffset}{-60pt}
-\addtolength{\textheight}{130pt}
-
-\newcommand{\w}[1]{\ensuremath{\textit{#1}}}
-\newcommand{\x}{\times}
-\newcommand{\rem}{\mtt{\%}}
-\newcommand{\rar}{\rightarrow}
-\newcommand{\Rar}{\Rightarrow}
-\newcommand{\U}{\cup}
-\newcommand{\join}{\sqcup}
-\newcommand{\ttt}[1]{\texttt{#1}}
-\newcommand{\mtt}[1]{\mathtt{#1}}
-\newcommand{\bigspace}{\,\,\,\,\,\,\,\,}
-
-\newcommand{\op}[2]{\mtt{#1(}#2\mtt{)}}
-\newcommand{\module}[3]{\mtt{#1(}#2\mtt{)(}#3\mtt{)}}
-\newcommand{\conc}{\mtt{@}}
-\newcommand{\ind}[1]{\mtt{[}#1\mtt{]}}
-\newcommand{\indr}[2]{\mtt{[}#1\mtt{:}#2\mtt{]}}
-\newcommand{\ifs}[3]{\mtt{if}\,\,#1\,\,\mtt{then}\,\,#2\,\,\mtt{else}\,\,#3}
-
-\newenvironment{prepost}[4]{
-  \begin{tabular}{|>{\centering}m{0.4\textwidth}|p{0.6\textwidth}|}
-    \hline
-    \multicolumn{2}{|l|}{\texttt{#1}} \\ \hline
-      \multirow{4}{*}{#2}
-     & Require \\ \cline{2-2}
-     & #3 \\ \cline{2-2}
-     & Guarantees \\ \cline{2-2}
-     & #4 \\ \hline
-  \end{tabular}
-}
-
-\newenvironment{prepostc}[5]{
-  \begin{tabular}{|>{\centering}m{0.4\textwidth}|p{0.6\textwidth}|}
-    \hline
-    \multicolumn{2}{|l|}{\texttt{#1}} \\ \hline
-      \multirow{6}{*}{#2}
-     & Require \\ \cline{2-2}
-     & #3 \\ \cline{2-2}
-     & Guarantees \\ \cline{2-2}
-     & #4 \\ \cline{2-2}
-     & Comment\\ \cline{2-2}
-     & #5 \\ \hline
-  \end{tabular}
-}
-
-\newenvironment{onlyc}[3]{
-  \begin{tabular}{|>{\centering}m{0.4\textwidth}|p{0.6\textwidth}|}
-    \hline
-    \multicolumn{2}{|l|}{\texttt{#1}} \\ \hline
-      \multirow{2}{*}{#2}
-     & Comment\\ \cline{2-2}
-     & #3 \\ \hline
-  \end{tabular}
-}
-
-\newenvironment{itemizec}{
-  \begin{itemize}
-}{
-  \end{itemize}
-  \quad
-  \vspace{-1em}
-}
+\usepackage{pttyr_descriptions}
 
 
 \begin{document}
@@ -91,23 +13,23 @@
 
 
 \section*{Convolutional Layers}
-\subsection*{\ttt{torch.nn.Conv2d}}%{{{
-\prepostc{torch.nn.Conv2d(in, out, kernel\_size, stride=1, padding=0,
-dilation=1, groups=1)(x)}{
+\subsection*{\ttt{torch.nn.Conv2d}}
+\prepostc{torch.nn.Conv2d(in\_channels, out\_channels, kernel\_size, stride=1,
+padding=0, dilation=1, groups=1, other\_params..)(x)}{
   \includegraphics[height=12em]{resources/conv2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3, d_4)$\bigspace ($rank = 4$)
-    \item $d_2 = in$
+    \item $d_2 = in\_channels$
     \item $d_3 + 2 \x padding[0] - dilation[0] \x (kernel\_size[0] - 1) - 1 \geq
     0$
     \item $d_4 + 2 \x padding[1] - dilation[1] \x (kernel\_size[1] - 1) - 1 \geq
     0$
-    \item $groups | in$ and $groups | out$
+    \item $groups | in\_channels$ and $groups | out\_channels$
   \end{itemizec}
 }{
   \begin{itemizec}
-    \item $|y| = (d_1, out, h, w)$ where.. refers to the proof tree.
+    \item $|y| = (d_1, out\_channels, h, w)$ where.. refers to the proof tree.
   \end{itemizec}
 }{
   \begin{itemizec}
@@ -117,9 +39,7 @@ dilation=1, groups=1)(x)}{
     (가로 세로에 대한 필터크기가 서로 다르도록) 이 경우를 위하여 proof 트리에서
     $kernel\_size[0], [1]$과 같은 표기를 사용하였습니다. 튜플이 아니라 스칼라
     입력인 경우, $kernel\_size[0], [1]$은 모두 $kernel\_size$와 같습니다.
-    \item 추가적인 옵션을 더하여 \ttt{Conv2d(in, out, k, s, p, d, g, bias=True,
-    padding\_mode=`zeros')}로 사용하기도 하지만, 뒤의 두 \ttt{bias},
-    \ttt{padding\_mode}는 출력 shape에 아무런 영향을 주지 않습니다.
+    \item 뒤의 $other\_params..$ 부분은 텐서 shape에 전혀 영향을 주지 않는 인자입니다.
   \end{itemizec}
 }
 \begin{align*}
@@ -154,18 +74,18 @@ dilation=1, groups=1)(x)}{
 \end{align*}
 
 \subsection*{(Builtins) \ttt{torch.conv2d}, \ttt{torch.nn.functional.conv2d}}
-\prepostc{torch.conv2d(input, filter, bias=None, stride=1, padding=0,
+\prepostc{torch.conv2d(input, weight, bias=None, stride=1, padding=0,
 dilation=1, groups=1)}{
   \includegraphics[height=12em]{resources/conv2d.png}
 }{
   \begin{itemizec}
     \item $|input| = (batch, in, h_{in}, w_{in})$\bigspace ($rank = 4$)
-    \item $|filter| = (out, in\_{group}, h_{filter}, w_{filter})$\bigspace
+    \item $|weight| = (out, in\_{group}, h_{weight}, w_{weight})$\bigspace
       ($rank = 4$)
     \item $bias$ is $None$ or $|bias| = (out)$
-    \item $h_{filter} + 2 \x padding[0] - dilation[0] \x (h_{filter} - 1) - 1
+    \item $h_{weight} + 2 \x padding[0] - dilation[0] \x (h_{weight} - 1) - 1
     \geq 0$
-    \item $w_{filter} + 2 \x padding[1] - dilation[1] \x (w_{filter} - 1) - 1
+    \item $w_{weight} + 2 \x padding[1] - dilation[1] \x (w_{weight} - 1) - 1
     \geq 0$
     \item $groups | in$, $groups | out$ and $in\_{group} \x group = in$
   \end{itemizec}
@@ -215,31 +135,28 @@ dilation=1, groups=1)}{
   \text{이 경우를 위해 $stride\ind{0}, stride\ind{1}$으로 표기함} \\
   \text{만일 $stride$가 튜플이 아닌 스칼라라면 $stride\ind{0}$ 또는 $\ind{1}$은
     $stride$ 값 자체를 의미}
-\end{align*}%}}}
+\end{align*}
 
-\subsection*{\ttt{torch.nn.Conv1d}}%{{{
-\prepostc{torch.nn.Conv1d(in, out, kernel\_size, stride=1, padding=0,
-dilation=1, groups=1)(x)}{
+\subsection*{\ttt{torch.nn.Conv1d}}
+\prepostc{torch.nn.Conv1d(in\_channels, out\_channels, kernel\_size, stride=1,
+padding=0, dilation=1, groups=1, other\_params..)(x)}{
   \includegraphics[height=12em]{resources/conv2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3)$\bigspace ($rank = 3$)
-    \item $d_2 = in$
+    \item $d_2 = in\_channels$
     \item $d_3 + 2 \x padding - dilation \x (kernel\_size - 1) - 1 \geq
     0$
-    \item $groups | in$ and $groups | out$
+    \item $groups | in\_channels$ and $groups | out\_channels$
   \end{itemizec}
 }{
   \begin{itemizec}
-    \item $|y| = (d_1, out, w)$ where.. refers to the proof tree.
+    \item $|y| = (d_1, out\_channels, w)$ where.. refers to the proof tree.
   \end{itemizec}
 }{
   \begin{itemizec}
     \item Convolution 1차원 레이어입니다.
     \item $kernel\_size$, $stride$ 등은 1차원 튜플로 구성될 수도 있습니다.
-    \item 추가적인 옵션을 더하여 \ttt{Conv1d(in, out, k, s, p, d, g, bias=True,
-    padding\_mode=`zeros')}로 사용하기도 하지만, 뒤의 두 \ttt{bias},
-    \ttt{padding\_mode}는 출력 shape에 아무런 영향을 주지 않습니다.
   \end{itemizec}
 }
 \begin{align*}
@@ -293,9 +210,9 @@ dilation=1, groups=1)(x)}{
   \\
   \text{$kernel\_size, stride, padding, dilation$는 1-length-tuple로 들어올
   수 있음}
-\end{align*}%}}}
+\end{align*}
 
-\subsection*{\ttt{torch.nn.Conv3d}}%{{{
+\subsection*{\ttt{torch.nn.Conv3d}}
 \begin{align*}
   \frac
   {
@@ -371,22 +288,23 @@ dilation=1, groups=1)(x)}{
   \text{이 경우를 위해 $stride\ind{0}, \ind{1}, \ind{2}$으로 표기함} \\
   \text{만일 $stride$가 튜플이 아닌 스칼라라면 $stride\ind{0}, \ind{1}$ 또는 
   $\ind{2}$는 $stride$ 값 자체를 의미}
-\end{align*}%}}}
+\end{align*}
 
-\subsection*{\ttt{torch.nn.ConvTranspose1d}}%{{{
-\prepostc{torch.nn.Conv1d(in, out, kernel, stride=1, pad=0,
-out\_pad=0, groups=1, bias=True, dilation=1, pad\_mode=`zeros')(x)}{
+\subsection*{\ttt{torch.nn.ConvTranspose1d}}
+\prepostc{torch.nn.ConvTranspose1d(in\_channels, out\_channels, kernel\_size,
+stride=1, padding=0, output\_padding=0, groups=1, bias=True, dilation=1,
+padding\_mode=`zeros')(x)}{
   \includegraphics[height=12em]{resources/conv2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3)$\bigspace ($rank = 3$)
-    \item $d_2 = in$
-    \item $kernel \leq d_3 + 2 \x padding$
-    \item $groups | in$ and $groups | out$
+    \item $d_2 = in\_channels$
+    \item $kernel\_size \leq d_3 + 2 \x padding$
+    \item $groups | in\_channels$ and $groups | out\_channels$
   \end{itemizec}
 }{
   \begin{itemizec}
-    \item $|y| = (d_1, out, w)$ where.. refers to the proof tree.
+    \item $|y| = (d_1, out\_channels, w)$ where.. refers to the proof tree.
   \end{itemizec}
 }{
   \begin{itemizec}
@@ -446,10 +364,10 @@ out\_pad=0, groups=1, bias=True, dilation=1, pad\_mode=`zeros')(x)}{
   \\
   \text{$kernel\_size, stride, padding, dilation$는 1-length-tuple로 들어올
   수 있음}
-\end{align*}%}}}
+\end{align*}
 
 \section*{Activations}
-\subsection*{\texttt{torch.nn.MaxPool2d}}%{{{
+\subsection*{\texttt{torch.nn.MaxPool2d}}
 \prepostc{torch.nn.MaxPool2d(kernel\_size, stride=kernel\_size,
 padding=0, dilation=1)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
@@ -574,15 +492,16 @@ return\_indices=False, ceil\_mode=False)(x)}{
   \\
   \text{(Builtins) \ttt{torch.max\_pool2d}나
   \ttt{torch.nn.functional.max\_pool2d}에 대한 적용}
-\end{align*}%}}}
+\end{align*}
 
-\subsection*{(Builtins) \texttt{torch.max\_pool2d}, \texttt{torch.nn.functional.max\_pool2d}}%{{{
-\prepostc{torch.max\_pool2d(x, kernel\_size, stride=kernel\_size,
+\subsection*{(Builtins) \texttt{torch.max\_pool2d},
+\texttt{torch.nn.functional.max\_pool2d}}
+\prepostc{torch.max\_pool2d(input, kernel\_size, stride=kernel\_size,
 padding=0, dilation=1, ceil\_mode=False)}{
   %\includegraphics[height=10em]{resources/maxpool2d.png}
 }{
   \begin{itemizec}
-    \item $|x| = (d_1, d_2, d_3, d_4)\text{ or } (d_2, d_3, d_4)$
+    \item $|input| = (d_1, d_2, d_3, d_4)\text{ or } (d_2, d_3, d_4)$
     \item $d_3 + 2 \x padding \ind{0} - dilation \ind{0}
         \x (kernel\_size \ind{0} - 1) - 1 \geq 0 $
     \item $d_4 + 2 \x padding \ind{1} - dilation \ind{1}
@@ -637,8 +556,8 @@ padding=0, dilation=1, ceil\_mode=False)}{
     $stride$ 값 자체를 의미}
 \end{align*}
 
-\prepostc{torch.nn.functional.max\_pool2d\_with\_indices(x, kernel\_size, stride=..., dilation=1,
-ceil\_mode=False)}{
+\prepostc{torch.nn.functional.max\_pool2d\_with\_indices(input, kernel\_size,
+stride=..., dilation=1, ceil\_mode=False)}{
   \includegraphics[height=8em]{resources/maxpool2d_ri.png}
 }{
   \begin{itemizec}
@@ -684,9 +603,9 @@ ceil\_mode=False)}{
       & \Rar (e', e'), c \cup c_{dim} \cup c_w \cup c_h 
     \end{array}
   }
-\end{align*}%}}}
+\end{align*}
 
-\subsection*{\texttt{torch.nn.AvgPool2d}}%{{{
+\subsection*{\texttt{torch.nn.AvgPool2d}}
 \prepostc{torch.nn.AvgPool2d(kernel\_size, stride=kernel\_size,
 padding=0, other\_params, ...)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
@@ -740,9 +659,9 @@ padding=0, other\_params, ...)(x)}{
   \text{이 경우를 위해 $stride\ind{0}, stride\ind{1}$으로 표기함} \\
   \text{만일 $stride$가 튜플이 아닌 스칼라라면 $stride\ind{0}$ 또는 $\ind{1}$은
     $stride$ 값 자체를 의미}
-\end{align*}%}}}
+\end{align*}
 
-\subsection*{\texttt{torch.nn.AdaptiveAvgPool2d}}%{{{
+\subsection*{\texttt{torch.nn.AdaptiveAvgPool2d}}
 \prepostc{torch.nn.AdaptiveAvgPool2d(output\_size)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
@@ -786,9 +705,9 @@ padding=0, other\_params, ...)(x)}{
   \text{이 경우를 위해 $output\_size\ind{0}, output\_size\ind{1}$으로 표기함} \\
   \text{만일 $output\_size$가 튜플이 아닌 스칼라라면 $output\_size\ind{0}$ 또는 $\ind{1}$은
     $output\_size$ 값 자체를 의미}
-\end{align*}%}}}
+\end{align*}
 
-\subsection*{\texttt{torch.nn.AdaptiveAvgPool3d}}%{{{
+\subsection*{\texttt{torch.nn.AdaptiveAvgPool3d}}
 \prepostc{torch.nn.AdaptiveAvgPool3d(output\_size)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
@@ -832,10 +751,11 @@ padding=0, other\_params, ...)(x)}{
   \text{이 경우를 위해 $output\_size\ind{0}, \ind{1} \ind{2}$으로 표기함} \\
   \text{만일 $output\_size$가 튜플이 아닌 스칼라라면 $output\_size\ind{0},
   \ind{1}$ 또는 $\ind{2}$은 $output\_size$ 값 자체를 의미}
-\end{align*}%}}}
+\end{align*}
+
 
 \section*{Normalizations}
-\subsection*{\texttt{torch.nn.BatchNorm2d}}%{{{
+\subsection*{\texttt{torch.nn.BatchNorm2d}}
 \prepost{torch.nn.BatchNorm2d(num\_features, other\_params...)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
@@ -861,9 +781,9 @@ padding=0, other\_params, ...)(x)}{
       c \cup c'
   }
 \end{align*}
-%}}}
 
-\subsection*{\texttt{torch.nn.BatchNorm3d}}%{{{
+
+\subsection*{\texttt{torch.nn.BatchNorm3d}}
 \prepost{torch.nn.BatchNorm3d(num\_features, other\_params...)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
@@ -889,9 +809,9 @@ padding=0, other\_params, ...)(x)}{
       c \cup c'
   }
 \end{align*}
-%}}}
 
-\subsection*{\texttt{torch.nn.BatchNorm1d}}%{{{
+
+\subsection*{\texttt{torch.nn.BatchNorm1d}}
 \prepost{torch.nn.BatchNorm1d(num\_features, other\_params...)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
@@ -917,23 +837,24 @@ padding=0, other\_params, ...)(x)}{
       c \cup c'
   }
 \end{align*}
-%}}}
 
-\subsection*{(Builtins) \texttt{torch.batch\_norm}, \texttt{torch.nn.functional.batch\_norm}}%{{{
-\prepostc{torch.batch\_norm(x, mean, var, weight=None, bias=None, training=False,
-other\_params,...)(x)}{
+
+\subsection*{(Builtins) \texttt{torch.batch\_norm},
+\texttt{torch.nn.functional.batch\_norm}}
+\prepostc{torch.batch\_norm(input, running\_mean, running\_var, weight=None,
+bias=None, training=False, other\_params,...)(x)}{
   %\includegraphics[height=10em]{resources/maxpool2d.png}
 }{
   \begin{itemizec}
-    \item $|x| = (d_1, d_2, d_3, \dots, d_k)$
+    \item $|input| = (d_1, d_2, d_3, \dots, d_k)$
     \item $k \geq 2$
     \item If $training$ is $False$ then
     \begin{itemize}
-      \item $|mean| = |var| = (d_2)$
+      \item $|running\_mean| = |running\_var| = (d_2)$
     \end{itemize}
     Otherwise,
     \begin{itemize}
-      \item $mean$ is $None$ or $|mean| = (d_2)$ (also for $var$)
+      \item $running\_mean$ is $None$ or $|running\_mean| = (d_2)$ (also for $running\_var$)
     \end{itemize}
     \item $weight$ is $None$ or $|weight| = (d_2)$ (also for $bias$)
   \end{itemizec}
@@ -968,9 +889,9 @@ other\_params,...)(x)}{
       c_b'
   }
 \end{align*}
-%}}}
 
-\subsection*{\texttt{torch.nn.GroupNorm}}%{{{
+
+\subsection*{\texttt{torch.nn.GroupNorm}}
 \prepost{torch.nn.GroupNorm(num\_groups, num\_channels, other\_params, ...)(x)}{
   \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
@@ -1000,6 +921,38 @@ other\_params,...)(x)}{
       c \cup c'
   }
 \end{align*}
-%}}}
+
+
+\section*{Fast Fourier Transformations}
+\subsection*{\texttt{torch.stft}}
+
+\subsection*{\texttt{torch.rfft}}
+
+\subsection*{\texttt{torch.fft}}
+
+\prepost{torch.nn.BatchNorm2d(num\_features, other\_params...)(x)}{
+}{
+  \begin{itemizec}
+    \item $|x| = (d_1, d_2, d_3, d_4)$\bigspace ($\mtt{rank} = 4$)
+    \item $d_2 = num\_features$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = (d_1, d_2, d_3, d_4)$\bigspace (same shape to $x$)
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      c' = \{ (\op{rank}{e} = 4) \land (e[2] = num\_features) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \module{BatchNorm2d}{num\_features, other\_params}{E} \Rar e,
+      c \cup c'
+  }
+\end{align*}
 
 \end{document}
