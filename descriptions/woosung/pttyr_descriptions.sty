@@ -1,0 +1,101 @@
+\usepackage[hangul]{kotex}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[margin=1in, bottom=1in]{geometry}
+
+\setlength{\hoffset}{-25pt}
+\addtolength{\textwidth}{50pt}
+\setlength{\voffset}{-60pt}
+\addtolength{\textheight}{130pt}
+
+\newcommand{\w}[1]{\ensuremath{\textit{#1}}}
+\newcommand{\x}{\times}
+\newcommand{\rem}{\mtt{\%}}
+\newcommand{\rar}{\rightarrow}
+\newcommand{\Rar}{\Rightarrow}
+\newcommand{\U}{\cup}
+\newcommand{\join}{\sqcup}
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\mtt}[1]{\mathtt{#1}}
+\newcommand{\bigspace}{\,\,\,\,\,\,\,\,}
+
+\newcommand{\op}[2]{\mtt{#1(}#2\mtt{)}}
+\newcommand{\module}[3]{\mtt{#1(}#2\mtt{)(}#3\mtt{)}}
+\newcommand{\conc}{\mtt{@}}
+\newcommand{\ind}[1]{\mtt{[}#1\mtt{]}}
+\newcommand{\indr}[2]{\mtt{[}#1\mtt{:}#2\mtt{]}}
+\newcommand{\ifs}[3]{\mtt{if}\,\,#1\,\,\mtt{then}\,\,#2\,\,\mtt{else}\,\,#3}
+
+\newenvironment{prepost}[4]{
+  \begin{tabular}{|>{\centering}m{0.4\textwidth}|p{0.6\textwidth}|}
+    \hline
+    \multicolumn{2}{|l|}{
+      \begin{minipage}[h]{\columnwidth}
+        \texttt{#1}
+      \end{minipage}
+    } \\ \hline
+      \multirow{4}{*}{#2}
+     & Require \\ \cline{2-2}
+     & #3 \\ \cline{2-2}
+     & Guarantees \\ \cline{2-2}
+     & #4 \\ \hline
+  \end{tabular}
+}
+
+\newenvironment{preposts}[3]{
+  \begin{tabular}{|>{\centering}m{0.4\textwidth}|p{0.6\textwidth}|}
+    \hline
+    \multicolumn{2}{|l|}{
+        \begin{minipage}[h]{\columnwidth}
+          \texttt{#1}
+        \end{minipage}
+    } \\ \hline
+      \multirow{6}{*}{#2}
+     & Comment\\ \cline{2-2}
+     & #3 \\ \hline
+  \end{tabular}
+}
+
+\newenvironment{prepostc}[5]{
+  \begin{tabular}{|>{\centering}m{0.4\textwidth}|p{0.6\textwidth}|}
+    \hline
+    \multicolumn{2}{|l|}{
+        \begin{minipage}[h]{\columnwidth}
+          \texttt{#1}
+        \end{minipage}
+    } \\ \hline
+      \multirow{6}{*}{#2}
+     & Require \\ \cline{2-2}
+     & #3 \\ \cline{2-2}
+     & Guarantees \\ \cline{2-2}
+     & #4 \\ \cline{2-2}
+     & Comment\\ \cline{2-2}
+     & #5 \\ \hline
+  \end{tabular}
+}
+
+\newenvironment{onlyc}[3]{
+  \begin{tabular}{|>{\centering}m{0.4\textwidth}|p{0.6\textwidth}|}
+    \hline
+    \multicolumn{2}{|l|}{
+        \begin{minipage}[h]{\columnwidth}
+          \texttt{#1}
+        \end{minipage}
+    } \\ \hline
+      \multirow{2}{*}{#2}
+     & Comment\\ \cline{2-2}
+     & #3 \\ \hline
+  \end{tabular}
+}
+
+\newenvironment{itemizec}{
+  \begin{itemize}
+}{
+  \end{itemize}
+  \quad
+  \vspace{-1em}
+}
