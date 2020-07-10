@@ -341,6 +341,60 @@ torch.prod(input, dim, keepdim=False, dtype=None)}{
   }
 \end{align*}
 
+\subsection*{\texttt{torch.Tensor.all}, \texttt{torch.Tensor.any}}
+\preposts{a.all(), a.all(dim, keepdim=False, out=None) or .any}{
+}{
+  \begin{itemizec}
+    \item shape의 기능은 \texttt{prod}과 똑같음
+    \item \texttt{torch.Tensor} 하위 함수이며, bool-타입 텐서에서만 사용 가능
+  \end{itemizec}
+}
+\begin{align*}
+  \forall \mtt{ft} \in \{ \mtt{all}, \mtt{any} \},\bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar \_, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\op{ft}{} \Rar (), c
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{ \mtt{all}, \mtt{any} \},\bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\op{ft}{n} \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{ \mtt{all}, \mtt{any} \},\bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc (1) \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\op{ft}{n, True} \Rar e', c \cup c'
+  }
+\end{align*}
+
+
 \subsection*{\texttt{torch.var}, \texttt{torch.std}}
 \prepostc{torch.var(input, unbiased=True) or .std}{
 }{

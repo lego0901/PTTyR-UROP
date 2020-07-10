@@ -14,7 +14,6 @@
 \section*{Matmul Layers}
 \subsection*{\texttt{torch.nn.Linear}}
 \prepostc{torch.nn.Linear(in\_features, out\_features, bias=True)(x)}{
-  \includegraphics[height=12em]{resources/conv2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, \dots, d_k)$
@@ -49,7 +48,6 @@
 \section*{Activations}
 \subsection*{\texttt{torch.nn.ReLU}, \texttt{torch.nn.ReLU6}, \texttt{torch.relu}, \texttt{torch.nn.functional.relu}}
 \prepostc{torch.nn.ReLU(inplace=True)(x)}{
-  \includegraphics[height=12em]{resources/conv2d.png}
 }{
 }{
   \begin{itemizec}
@@ -87,10 +85,113 @@
   }
 \end{align*}
 
+
+\section*{End Points}
+\subsection*{\texttt{torch.nn.CrossEntropyLoss}}
+\prepostc{torch.nn.CrossEntropyLoss(weight=None, size\_average=None,
+ignore\_index=-100, reduction=`mean')(input, target)}{
+}{
+  \begin{itemizec}
+    \item $|input| = (n, c, d_1, d_2, \dots, d_k)$\bigspace ($\op{rank}{|input|}
+    \geq 2$)
+    \item $|target| = (n, d_1, d_2, \dots, d_k)$
+    \begin{itemize}
+      \item $\op{rank}{|target|} + 1 = \op{rank}{|input|}$
+      \item $|target|[1] = |input|[1]$, $|target|[2] = |input|[3]$, ...
+    \end{itemize}
+    \item if $weight \neq None$, then $|weight| = (c)$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = \ifs{reduction ==  `none'}{(n, d_1, d_2, \dots, d_k)}{()}$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $size\_average$, $reduce$ 인자는 deprecated로 도큐먼트되어 있습니다.
+    \item $ignore\_index$는 $reduction$이나 $size\_average$ 옵션에서 평균을
+    계산하면서 생략하는 인덱스 번호를 지정할 때 쓰는 것으로, shape에 영향을 주지 않습니다.
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c_e \\
+      \sigma \vdash T \Rar t, c_t \\
+      \sigma \vdash weight \Rar w, c_w \bigspace \text{if $weight \neq None$, otherwise $c_w = \emptyset$} \\
+      c_{dim} = \{ (\op{rank}{e} \geq 2) \land (\op{rank}{e} = \op{rank}{t} + 1)\} \\
+      c_{elt} = \{ (e[1] = t[1]) \land (e[3] = t[2]) \land (e[4] = t[3]) \land \cdots \} \\
+      c_{weight} = \{ (weight = None \lor w = (e[2])) \} \\
+      e' = \ifs{reduction = `none'}{t}{()}
+    \end{array}
+  }
+  {
+    \sigma \vdash \module{CrossEntropyLoss}{weight=None, ..., reduction=`mean'}{E, T}
+      \Rar e', c_e \cup c_t \cup c_w \cup c_{dim} \cup c_{elt} \cup c_{weight}
+  }
+\end{align*}
+
+\subsection*{\texttt{torch.nn.TripletMarginLoss}}
+{\bf NOT DONE YET!!}
+
+Reading Papers...
+
+\prepostc{torch.nn.TripletMarginLoss(margin=1.0, p=2.0, eps=1e-6, swap=False,
+size\_average=False, reduce=None, reduction=`mean')(anchor, positive, negative)}{
+}{
+  \begin{itemizec}
+    \item $broadcastable(|anchor|, |positive|, |negative|)$
+    \item $\op{rank}{broadcast(|anchor|, |positive|, |negative|)} \geq 2$
+    \item if $swap$ is $True$ then,
+    \begin{itemize}
+
+      \item $\op{rank}{|anchor|}, |positive|, |negative|)$
+      \item $\op{rank}{broadcast(|anchor|, |positive|, |negative|)} \geq 2$
+    \end{itemize}
+    \item $|target| = (n, d_1, d_2, \dots, d_k)$
+    \begin{itemize}
+      \item $\op{rank}{|target|} + 1 = \op{rank}{|input|}$
+      \item $|target|[1] = |input|[1]$, $|target|[2] = |input|[3]$, ...
+    \end{itemize}
+    \item if $weight \neq None$, then $|weight| = (c)$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = \ifs{reduction ==  `none'}{(n, d_1, d_2, \dots, d_k)}{()}$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $size\_average$, $reduce$ 인자는 deprecated로 도큐먼트되어 있습니다.
+    \item $ignore\_index$는 $reduction$이나 $size\_average$ 옵션에서 평균을
+    계산하면서 생략하는 인덱스 번호를 지정할 때 쓰는 것으로, shape에 영향을 주지
+    않습니다.
+    \item 토치 구현의 버그인지 모르겠는데, $swap$이 $True$인 경우가 너무
+    복잡합니다.. 도큐먼트에도 논문 하나만 첨부되어 있습니다.
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c_e \\
+      \sigma \vdash T \Rar t, c_t \\
+      \sigma \vdash weight \Rar w, c_w \bigspace \text{if $weight \neq None$, otherwise $c_w = \emptyset$} \\
+      c_{dim} = \{ (\op{rank}{e} \geq 2) \land (\op{rank}{e} = \op{rank}{t} + 1)\} \\
+      c_{elt} = \{ (e[1] = t[1]) \land (e[3] = t[2]) \land (e[4] = t[3]) \land \cdots \} \\
+      c_{weight} = \{ (weight = None \lor w = (e[2])) \} \\
+      e' = \ifs{reduction = `none'}{t}{()}
+    \end{array}
+  }
+  {
+    \sigma \vdash \module{CrossEntropyLoss}{weight=None, ..., reduction=`mean'}{E, T}
+      \Rar e', c_e \cup c_t \cup c_w \cup c_{dim} \cup c_{elt} \cup c_{weight}
+  }
+\end{align*}
+
+
 \section*{Technique}
 \subsection*{\texttt{torch.nn.Dropout}, \texttt{torch.dropout}, \texttt{torch.nn.functional.dropout}}
 \prepostc{torch.nn.Dropout(...)(x)}{
-  \includegraphics[height=12em]{resources/conv2d.png}
 }{
 }{
   \begin{itemizec}
@@ -129,7 +230,6 @@
 \section*{Wrapper}
 \subsection*{\texttt{torch.nn.Sequential}}
 \prepost{torch.nn.Sequential(l1, l2, l3, ..., ln)(x)}{
-  \includegraphics[height=12em]{resources/conv2d.png}
 }{
   \begin{itemizec}
     \item 순차적으로 shape이 맞아떨어져야함

@@ -36,8 +36,9 @@
   }
 \end{align*}
 
-\subsection*{\texttt{torch.Tensor.dim}}
-\prepost{a.dim()}{
+\subsection*{\texttt{torch.Tensor.dim}, \texttt{torch.Tensor.ndim},
+\texttt{torch.Tensor.ndimension}}
+\prepost{a.dim(), a.ndim or a.ndimension()}{
 }{
   \begin{itemizec}
     \item $|\mtt{a}| = (d_1, d_2, \dots, d_k)$
@@ -58,10 +59,30 @@
     \sigma \vdash E.\op{dim}{} \Rar \op{rank}{e}, c
   }
 \end{align*}
-
-
-\section*{Boolean Tensor Operator}
-\subsection*{\texttt{torch.Tensor.all}}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E.\op{dim}{} \Rar k, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\mtt{ndim} \Rar k, c
+  }
+  \tag*{alias}
+\end{align*}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E.\op{dim}{} \Rar k, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\mtt{ndimension()} \Rar k, c
+  }
+  \tag*{alias}
+\end{align*}
 
 
 \section*{Conversion To/From NonTensor}

@@ -140,7 +140,7 @@ dilation=1, groups=1)}{
 \subsection*{\ttt{torch.nn.Conv1d}}
 \prepostc{torch.nn.Conv1d(in\_channels, out\_channels, kernel\_size, stride=1,
 padding=0, dilation=1, groups=1, other\_params..)(x)}{
-  \includegraphics[height=12em]{resources/conv2d.png}
+  \includegraphics[height=8em]{resources/conv1d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3)$\bigspace ($rank = 3$)
@@ -294,7 +294,7 @@ padding=0, dilation=1, groups=1, other\_params..)(x)}{
 \prepostc{torch.nn.ConvTranspose1d(in\_channels, out\_channels, kernel\_size,
 stride=1, padding=0, output\_padding=0, groups=1, bias=True, dilation=1,
 padding\_mode=`zeros')(x)}{
-  \includegraphics[height=12em]{resources/conv2d.png}
+  \includegraphics[height=8em]{resources/convtranspose1d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3)$\bigspace ($rank = 3$)
@@ -558,7 +558,6 @@ padding=0, dilation=1, ceil\_mode=False)}{
 
 \prepostc{torch.nn.functional.max\_pool2d\_with\_indices(input, kernel\_size,
 stride=..., dilation=1, ceil\_mode=False)}{
-  \includegraphics[height=8em]{resources/maxpool2d_ri.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3, d_4)\text{ or } (d_2, d_3, d_4)$
@@ -608,7 +607,6 @@ stride=..., dilation=1, ceil\_mode=False)}{
 \subsection*{\texttt{torch.nn.AvgPool2d}}
 \prepostc{torch.nn.AvgPool2d(kernel\_size, stride=kernel\_size,
 padding=0, other\_params, ...)(x)}{
-  \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3, d_4)\text{ or } (d_2, d_3, d_4)$
@@ -621,7 +619,7 @@ padding=0, other\_params, ...)(x)}{
   \end{itemizec}
 }{
   \begin{itemizec}
-    \item 셀들의 평균으로 정규화하는 레이어
+    \item 셀들의 최대값이 아닌 평균으로 정규화하는 레이어
     \item \texttt{MaxPool2d}와 비슷하나 $dilation$과 $return\_indices$ 옵션이
     없음
   \end{itemizec}
@@ -663,7 +661,7 @@ padding=0, other\_params, ...)(x)}{
 
 \subsection*{\texttt{torch.nn.AdaptiveAvgPool2d}}
 \prepostc{torch.nn.AdaptiveAvgPool2d(output\_size)(x)}{
-  \includegraphics[height=10em]{resources/maxpool2d.png}
+  \includegraphics[height=8em]{resources/adaptiveavgpool2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3, d_4)\text{ or } (d_2, d_3, d_4)$
@@ -709,7 +707,6 @@ padding=0, other\_params, ...)(x)}{
 
 \subsection*{\texttt{torch.nn.AdaptiveAvgPool3d}}
 \prepostc{torch.nn.AdaptiveAvgPool3d(output\_size)(x)}{
-  \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3, d_4, d_5)\text{ or } (d_2, d_3, d_4, d_5)$
@@ -757,7 +754,7 @@ padding=0, other\_params, ...)(x)}{
 \section*{Normalizations}
 \subsection*{\texttt{torch.nn.BatchNorm2d}}
 \prepost{torch.nn.BatchNorm2d(num\_features, other\_params...)(x)}{
-  \includegraphics[height=10em]{resources/maxpool2d.png}
+  \includegraphics[height=6em]{resources/batchnorm2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3, d_4)$\bigspace ($\mtt{rank} = 4$)
@@ -785,7 +782,6 @@ padding=0, other\_params, ...)(x)}{
 
 \subsection*{\texttt{torch.nn.BatchNorm3d}}
 \prepost{torch.nn.BatchNorm3d(num\_features, other\_params...)(x)}{
-  \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3, d_4, d_5)$\bigspace ($\mtt{rank} = 5$)
@@ -810,10 +806,8 @@ padding=0, other\_params, ...)(x)}{
   }
 \end{align*}
 
-
 \subsection*{\texttt{torch.nn.BatchNorm1d}}
 \prepost{torch.nn.BatchNorm1d(num\_features, other\_params...)(x)}{
-  \includegraphics[height=10em]{resources/maxpool2d.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, d_3)$\bigspace ($\mtt{rank} = 3$)
@@ -893,7 +887,7 @@ bias=None, training=False, other\_params,...)(x)}{
 
 \subsection*{\texttt{torch.nn.GroupNorm}}
 \prepost{torch.nn.GroupNorm(num\_groups, num\_channels, other\_params, ...)(x)}{
-  \includegraphics[height=10em]{resources/maxpool2d.png}
+  \includegraphics[height=8em]{resources/groupnorm.png}
 }{
   \begin{itemizec}
     \item $|x| = (d_1, d_2, \dots, d_k)$
@@ -918,39 +912,6 @@ bias=None, training=False, other\_params,...)(x)}{
   {
     \sigma \vdash \module{GroupNorm}{num\_groups, num\_channels, other\_params,
     ...}{E} \Rar e,
-      c \cup c'
-  }
-\end{align*}
-
-
-\section*{Fast Fourier Transformations}
-\subsection*{\texttt{torch.stft}}
-
-\subsection*{\texttt{torch.rfft}}
-
-\subsection*{\texttt{torch.fft}}
-
-\prepost{torch.nn.BatchNorm2d(num\_features, other\_params...)(x)}{
-}{
-  \begin{itemizec}
-    \item $|x| = (d_1, d_2, d_3, d_4)$\bigspace ($\mtt{rank} = 4$)
-    \item $d_2 = num\_features$
-  \end{itemizec}
-}{
-  \begin{itemizec}
-    \item $|y| = (d_1, d_2, d_3, d_4)$\bigspace (same shape to $x$)
-  \end{itemizec}
-}
-\begin{align*}
-  \frac
-  {
-    \begin{array}{l}
-      \sigma \vdash E \Rar e, c \\
-      c' = \{ (\op{rank}{e} = 4) \land (e[2] = num\_features) \}
-    \end{array}
-  }
-  {
-    \sigma \vdash \module{BatchNorm2d}{num\_features, other\_params}{E} \Rar e,
       c \cup c'
   }
 \end{align*}

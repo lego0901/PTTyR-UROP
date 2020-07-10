@@ -139,8 +139,8 @@
 \end{align*}
  
 \subsection*{\texttt{torch.linspace}}
-\prepostc{torch.range(start, end, steps=100, out=None, ...), torch.arange(...)}{
-  \includegraphics[width=\linewidth]{resources/range.png}
+\prepostc{torch.linspace(start, end, steps=100, out=None, ...)}{
+  \includegraphics[height=6em]{resources/linspace.png}
 }{
   \begin{itemizec}
     \item $steps \geq 0$
@@ -163,7 +163,7 @@
     \end{array}
   }
   {
-    \sigma \vdash \op{ft}{s, e, steps=100, out=None, ...} \Rar (steps), c
+    \sigma \vdash \op{linspace}{s, e, steps=100, out=None, ...} \Rar (steps), c
   }
 \end{align*}
 
@@ -217,6 +217,7 @@
   \end{itemizec}
 }{
   \begin{itemizec}
+    \item $low$부터 $high-1$까지 랜덤한 정수 할당
     \item $out$-텐서가 있는 함수
   \end{itemizec}
 }
@@ -250,7 +251,7 @@
   {
   }
   {
-    \sigma \vdash \op{randint}{n, out=None, ... } \Rar (n), \{(n \geq 0)\}
+    \sigma \vdash \op{randperm}{n, out=None, ... } \Rar (n), \{(n \geq 0)\}
   }
 \end{align*}
 
@@ -413,7 +414,9 @@
 \end{align*}
 
 \subsection*{\texttt{torch.scalar\_tensor}}
-\prepostc{torch.scalar\_tensor(scalar, ...)}{}{}{
+\prepostc{torch.scalar\_tensor(scalar, ...)}{
+  \includegraphics[height=3em]{resources/scalar_tensor.png}
+}{}{
   \begin{itemizec}
     \item $|y| = ()$
   \end{itemizec}
@@ -432,7 +435,9 @@
 \end{align*}
  
 \subsection*{\texttt{torch.eye}}
-\prepostc{torch.eye(n, m=None, out=None, ...)}{}{
+\prepostc{torch.eye(n, m=None, out=None, ...)}{
+  \includegraphics[height=8em]{resources/eye.png}
+}{
   \begin{itemizec}
     \item $n \geq 0$
     \item $m = None$ or $m \geq 0$
@@ -515,7 +520,7 @@ All these builtin functions \texttt{torch.*} are used with
 \texttt{input}s.
 \begin{itemize}
   \item $\mtt{eq}, \mtt{le}, \mtt{lt}, \mtt{ge}, \mtt{gt}$
-  \item $\mtt{mul}, \mtt{div}, \mtt{fmod}$
+  \item $\mtt{mul}, \mtt{div}, \mtt{fmod}, \mtt{atan2}$
 \end{itemize}
 한 가지 독특한 성질은 $input$, $other$ 인자가 스칼라로 들어오면 $[\:]$-shape
 텐서로 변환된 후 계산됩니다.
@@ -658,11 +663,12 @@ of the \texttt{input}s. (Additional $alpha$ option!)
 
 \subsection*{\texttt{torch.Tensor.expand}}
 \prepostc{a.expand(n1, n2, ..., nl)}{
+  \includegraphics[height=6em]{resources/expand.png}
 }{
   \begin{itemizec}
     \item $|\mtt{a}| = (d_1, d_2, \dots, d_k)$
     \item $k \leq l$
-    \item $\forall i = 1, 2, \dots, l-k$, $n_i > 0$
+    \item $\forall i = 1, 2, \dots, l-k$, $(n_i > 0)$
     \item $\forall i = l-k+1, l-k+2, \dots, l$, [($n_i = -1$) or (($n_i > 0$)
     and (($d_{i-(l-k)} = 1$) or ($d_{i-(l-k)} = n_i$)))]
   \end{itemizec}
@@ -784,6 +790,7 @@ of the \texttt{input}s. (Additional $alpha$ option!)
 
 \subsection*{\texttt{torch.chunk}}
 \prepostc{torch.chunk(input, chunks, dim=0)}{
+  \includegraphics[height=9em]{resources/chunk.png}
 }{
   \begin{itemizec}
     \item $|input| = (d_1, d_2, \dots, d_k)$
@@ -822,5 +829,44 @@ of the \texttt{input}s. (Additional $alpha$ option!)
   }
   \tag*{$l$-원소 tuple 형태로 반환}
 \end{align*}
+
+
+\section*{Dynamic Operations (Cannot Predict Statically)}
+\subsection*{\texttt{torch.nonzero}}
+\prepostc{torch.nonzero(input, out=None, as\_tuple=False)}{
+}{
+}{
+  \begin{itemizec}
+    \item if $as\_tuple$, then $|y| = (countNonzeros(input), \op{rank}{|input|})$
+    \item otherwise, then $|y|$ is $\op{rank}{|input|}$-tuple of tensors shaped
+    $(countNonzeros(input))$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $countNonzeros$는 주어진 텐서에서 $0$이 아닌 항의 개수를 구하는 것
+    \item Nonzero 인덱스 번호들을 반환함.
+    \item $out$-텐서 인자가 있는 함수
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E_1 \Rar e_1, c_1 \\
+      \sigma \vdash E_2 \Rar e_2, c_2 \\
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{pow}{E_1, E_2, out=None} \Rar broadcast(e_1, e_2),
+      c_1 \cup c_2 \cup broadcastable(e_1, e_2)
+  }
+\end{align*}
+Example Codes:
+\begin{Verbatim}[tabsize=4,xleftmargin=2em]
+print(torch.nonzero(torch.tensor([[0, 1, 0], [0, 1, 1]])))
+  # output: tensor([[0, 1], [1, 1], [1, 2]])
+print(torch.nonzero(torch.tensor([[0, 1, 0], [0, 1, 1]]), as_tuple=True))
+  # output: (tensor([0, 1, 1]), tensor([1, 1, 2]))
+\end{Verbatim}
 
 \end{document}
