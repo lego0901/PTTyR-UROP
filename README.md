@@ -55,7 +55,6 @@ Tensor shape 분석 언어 명세와, 이를 위한 자료들을 업로드하겠
 
 - (완료) `pytorch` 사용 프로젝트 레포지토리를 최대한 찾은 뒤, 어떤 함수들이 쓰이는지 테이블 형태로 만들겠습니다. 빈도수 내림차순으로 정렬하므로 조금의 작업만으로도 더 많은 코드를 커버할 수 있을 것입니다.
 - (진행) 이 테이블을 기반으로 바로 명세화 작업 들어가겠습니다.
-- s
 
 
 
@@ -73,6 +72,9 @@ Tensor shape 분석 언어 명세와, 이를 위한 자료들을 업로드하겠
     - item, view
     - expand, split, chunk
     - nonzero
+  - nontensor.pdf
+    - numel, dim, ndim, ndimension
+    - tolist, as_tensor, from_numpy
   - statistics.pdf
     - max, min
     - sum, mean, prod, var, std
