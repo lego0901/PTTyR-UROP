@@ -341,6 +341,128 @@ torch.prod(input, dim, keepdim=False, dtype=None)}{
   }
 \end{align*}
 
+
+
+\subsection*{\texttt{torch.norm}}
+\prepostc{torch.norm(input, p=`fro', dim=None, keepdim=False, out=None, 
+dtype=None)}{
+  %\includegraphics[height=8em]{resources/intoone.png}
+}{
+  \begin{itemizec}
+    \item $|input| = (d_1, d_2, \dots, d_k)$
+    \item $dim = None$ or $0 \leq dim < k$ or $dim = (p_1, p_2, \dots, p_m)$
+    \item[] such that $0 \leq p_1, p_2, \dots, p_m < k$ (tuple) 
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item If $dim = None$ then
+    \begin{itemize}
+      \item $|y| = ()$
+    \end{itemize}
+    \item If $dim \neq None$ then
+    \begin{itemize}
+      \item If $keepdim = False$ then
+      \begin{itemize}
+        \item $|y| = (d_1, d_2, \dots, d_{dim}, d_{dim+2}, \dots, d_k)$
+      \end{itemize}
+      \item If $keepdim = True$ then
+      \begin{itemize}
+        \item $|y| = (d_1, d_2, \dots, d_{dim}, 1, d_{dim+2}, \dots, d_k)$
+      \end{itemize}
+    \end{itemize}
+    \item 만약 $dim$이 여러 axis로 구성된 튜플이면 해당 축들이 지워지거나,
+    아니면 1차원으로 바뀐 텐서 shape을 반환
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item 일단 기본적인 shape 연산은 \texttt{sum}과 비슷함
+    \item $out$-텐서 인자가 있는 함수
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar \_, c
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{norm}{E} \Rar (), c
+  }
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{norm}{E, p=`fro', n, False} \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e' = e \indr{1}{n} \conc (1) \conc e \indr{n+2}{k} \\
+      c' = \{ (k \geq 1) \land (0 \leq n < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{norm}{E, p=`fro', n, True, ...} \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = \ifs{0 \in \{n_1, n_2, \dots, n_r\}}{()}{(e[1])} \\
+      e_2 = \ifs{1 \in \{n_1, n_2, \dots, n_r\}}{()}{(e[2])} \\
+      \bigspace \cdots \\
+      e_k = \ifs{k-1 \in \{n_1, n_2, \dots, n_r\}}{()}{(e[k])} \\
+      e' = e_1 \conc e_2 \conc \cdots \conc e_k \\
+      c' = \{ (k \geq 1) \land (\forall i=1, 2, \dots, r,\: 0 \leq n_i < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{norm}{E, p=`fro', (n_1, n_2, \dots, n_r), False, ...}
+      \Rar e', c \cup c'
+  }
+\end{align*}
+
+\begin{align*}
+  \forall \mtt{ft} \in \{\mtt{sum}, \mtt{mean}\},
+  \bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      e_1 = \ifs{0 \in \{n_1, n_2, \dots, n_r\}}{(1)}{(e[1])} \\
+      e_2 = \ifs{1 \in \{n_1, n_2, \dots, n_r\}}{(1)}{(e[2])} \\
+      \bigspace \cdots \\
+      e_k = \ifs{k-1 \in \{n_1, n_2, \dots, n_r\}}{(1)}{(e[k])} \\
+      e' = e_1 \conc e_2 \conc \cdots \conc e_k \\
+      c' = \{ (k \geq 1) \land (\forall i=1, 2, \dots, r,\: 0 \leq n_i < k) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{norm}{E, p=`fro', (n_1, n_2, \dots, n_r), True, ...}
+      \Rar e', c \cup c'
+  }
+\end{align*}
+
 \subsection*{\texttt{torch.Tensor.all}, \texttt{torch.Tensor.any}}
 \preposts{a.all(), a.all(dim, keepdim=False, out=None) or .any}{
 }{

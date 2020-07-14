@@ -36,8 +36,9 @@
   {
     \begin{array}{l}
       \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
       e' = e[1:k-1] \conc (out) \\
-      c' = \{ (\op{rank}{e} \geq 1) \land (d_k = in) \} \\
+      c' = \{ (k \geq 1) \land (d_k = in) \} \\
     \end{array}
   }
   {
