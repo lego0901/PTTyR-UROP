@@ -84,27 +84,6 @@
   \tag*{alias}
 \end{align*}
 
-\subsection*{\texttt{torch.eq}}
-\prepost{torch.eq(input, other)}{
-}{
-}{
-  \begin{itemizec}
-    \item $input$과 $other$의 내용물과 shape이 모두 일치하면 $True$, 아니면 $False$
-  \end{itemizec}
-}
-\begin{align*}
-  \frac
-  {
-    \begin{array}{l}
-      \sigma \vdash A \Rar \_, c_a \\
-      \sigma \vdash B \Rar \_, c_b
-    \end{array}
-  }
-  {
-    \sigma \vdash torch.\op{eq}{A, B} \Rar bool, c_a \cup c_b
-  }
-\end{align*}
-
 
 \section*{Conversion To/From NonTensor}
 \subsection*{\texttt{torch.Tensor.tolist}}
