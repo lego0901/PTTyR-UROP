@@ -1,2 +1,8 @@
 */__pycache__
 __pycache__
+descriptions/woosung/*.out
+descriptions/woosung/*.log
+descriptions/woosung/*.aux
+descriptions/woosung/*.fls
+descriptions/woosung/*.fdb_latexmk
+descriptions/woosung/*.synctex.gz

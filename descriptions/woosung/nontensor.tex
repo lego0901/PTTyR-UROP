@@ -1,0 +1,120 @@
+
+\documentclass{article}
+
+\usepackage{pttyr_descriptions}
+
+
+\begin{document}
+
+\setlist{nolistsep}
+\nointerlineskip
+\par\noindent
+\setlength{\parindent}{0pt}
+
+
+\section*{Scalar Output}
+\subsection*{\texttt{torch.numel}}
+\prepost{torch.numel(input)}{
+}{
+  \begin{itemizec}
+    \item $|\mtt{input}| = (d_1, d_2, \dots, d_k)$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $d_1 \cdot d_2 \cdot \cdots \cdot d_k$를 스칼라로 반환
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{numel}{E} \Rar e[1] e[2] \cdots e[k], c
+  }
+\end{align*}
+
+\subsection*{\texttt{torch.Tensor.dim}, \texttt{torch.Tensor.ndim},
+\texttt{torch.Tensor.ndimension}}
+\prepost{a.dim(), a.ndim or a.ndimension()}{
+}{
+  \begin{itemizec}
+    \item $|\mtt{a}| = (d_1, d_2, \dots, d_k)$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $k$를 스칼라로 반환
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\op{dim}{} \Rar \op{rank}{e}, c
+  }
+\end{align*}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E.\op{dim}{} \Rar k, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\mtt{ndim} \Rar k, c
+  }
+  \tag*{alias}
+\end{align*}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E.\op{dim}{} \Rar k, c
+    \end{array}
+  }
+  {
+    \sigma \vdash E.\mtt{ndimension()} \Rar k, c
+  }
+  \tag*{alias}
+\end{align*}
+
+\subsection*{\texttt{torch.eq}}
+\prepost{torch.eq(input, other)}{
+}{
+}{
+  \begin{itemizec}
+    \item $input$과 $other$의 내용물과 shape이 모두 일치하면 $True$, 아니면 $False$
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash A \Rar \_, c_a \\
+      \sigma \vdash B \Rar \_, c_b
+    \end{array}
+  }
+  {
+    \sigma \vdash torch.\op{eq}{A, B} \Rar bool, c_a \cup c_b
+  }
+\end{align*}
+
+
+\section*{Conversion To/From NonTensor}
+\subsection*{\texttt{torch.Tensor.tolist}}
+\begin{itemize}
+  \item 파이썬 리스트로 텐서를 바꿔주는 함수
+\end{itemize}
+
+\subsection*{\texttt{torch.as\_tensor(numpy\_list)}, \texttt{torch.from\_numpy}}
+\begin{itemize}
+  \item 넘파이 배열이나 파이썬 리스트로부터 텐서를 만드는 함수
+\end{itemize}
+
+\end{document}

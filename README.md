@@ -53,7 +53,49 @@ Tensor shape 분석 언어 명세와, 이를 위한 자료들을 업로드하겠
 
 ### 진행 예정 사항
 
-- `pytorch` 사용 프로젝트 레포지토리를 최대한 찾은 뒤, 어떤 함수들이 쓰이는지 테이블 형태로 만들겠습니다.
-- 빈도수 내림차순으로 정렬하므로 조금의 작업만으로도 더 많은 코드를 커버할 수 있을 것입니다.
-- 이 테이블을 기반으로 바로 명세화 작업 들어가겠습니다.
+- (완료) `pytorch` 사용 프로젝트 레포지토리를 최대한 찾은 뒤, 어떤 함수들이 쓰이는지 테이블 형태로 만들겠습니다. 빈도수 내림차순으로 정렬하므로 조금의 작업만으로도 더 많은 코드를 커버할 수 있을 것입니다.
+- (진행) 이 테이블을 기반으로 바로 명세화 작업 들어가겠습니다.
+
+
+
+###  명세화 진행 상황
+
+- 작업완료 함수 목록 (by 송우성)  `doc-woosung` 브랜치의 `description/woosung` 폴더에서 제가 작업한 목록들을 볼 수 있습니다.
+  - basics.pdf
+    - size, stride, shape, tensor
+    - range, arange, linspace
+    - zeros, empty, rand, randn, randint, randperm, full, normal, new_empty, new_full, clone
+    - zeros_like, empty_like, rand_like, randn_like, full_like
+    - scalar_tensor, eye
+    - round, floor, ceil, exp, log, log10, log2, log1p, sigmoid, sqrt, rsqrt, cos, sin, tan, angle, sign, neg, frac, contiguous, clamp
+    - eq, le, lt, ge, gt, mul, div, fmod, atan2, add, sub, pow
+    - item, view
+    - expand, split, chunk
+    - nonzero
+  - nontensor.pdf
+    - numel, dim, ndim, ndimension
+    - tolist, as_tensor, from_numpy
+  - statistics.pdf
+    - max, min
+    - sum, mean, prod, var, std
+    - all, any
+    - mode, median
+  - signals.pdf
+    - stft, rfft, fft
+    - hann_window, bartlett_window, hamming_window
+    - svd, diag
+  - simple_neural.pdf
+    - Linear
+    - ReLU, ReLU6, relu
+    - CrossEntropyLoss, TripletMarginLoss(Not Done)
+    - Dropout, dropout
+    - Sequential
+  - convolutionals.pdf
+    - Conv2d, conv2d, Conv1d, conv1d, Conv3d, conv3d
+    - ConvTranspose1d, conv_transpose1d
+    - MaxPool2d, max_pool2d, max_pool2d_with_indices, AvgPool2d, AdaptiveAvgPool2d, AdaptiveAvgPool3d
+    - BatchNorm2d, BatchNorm3d, BatchNorm1d, batch_norm, GroupNorm
+  - recurrents.pdf (will add)
+
+
 
