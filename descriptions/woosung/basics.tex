@@ -513,6 +513,122 @@ shape이 보존됩니다.
   }
 \end{align*}
 
+\subsection*{\texttt{torch.threshold}, \texttt{torch.nn.functional.threshold}}
+\prepost{torch.threshold(input, threshold, value, inplace=False)}{
+  %\includegraphics[height=8em]{resources/reduce.png}
+}{
+}{
+  \begin{itemizec}
+    \item $|y| = |input|$
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{threshold}{E, threshold, value, inplace=False} \Rar e, c
+  }
+\end{align*}
+
+\subsection*{\texttt{torch.softmax}, \texttt{torch.nn.functional.softmax},
+\texttt{torch.log\_softmax}, \texttt{torch.nn.functional.log\_softmax}}
+\prepostc{torch.softmax(input, dim=None, \_stacklevel=3, dtype=None)
+or torch.log\_softmax (same arguments)}{
+  %\includegraphics[height=8em]{resources/reduce.png}
+}{
+  \begin{itemizec}
+    \item $-\op{rank}{|input|} \leq dim < \op{rank}{|input|}$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = |input|$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item 원래 $dim = None$일 경우 last dimension이 기본값으로 들어갔지만,
+    이제는 $dim = None$으로 쓰는 방식이 deprecated 되었다고 나와있음.
+  \end{itemizec}
+}
+\begin{align*}
+  \forall \mtt{ft} \in \{ \mtt{softmax}, \mtt{log\_softmax} \},\bigspace
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      c' = \{ (-\op{rank}{e} \leq dim < \op{rank}{e}) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{ft}{E, dim=None, \_stacklevel=3, dtype=None} \Rar e, c \cup c'
+  }
+\end{align*}
+
+\subsection*{\texttt{torch.inverse}}
+\prepostc{torch.inverse(input, out=None)}{
+  %\includegraphics[height=8em]{resources/reduce.png}
+}{
+  \begin{itemizec}
+    \item $|input| = (d_1, d_2, \dots, d_k)$
+    \item $k \geq 2$
+    \item $d_{k-1} = d_k$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = |input|$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item 정사각행렬의 곱의 역원
+    \item $out$-텐서 인자가 있는 함수
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      k = \op{rank}{e} \\
+      c' = \{ (k \geq 2) \land (e[k-1] = e[k]) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{inverse}{E, out=None} \Rar e, c \cup c'
+  }
+\end{align*}
+
+\subsection*{\texttt{torch.flip}}
+\prepost{torch.flip(input, dims)}{
+  %\includegraphics[height=8em]{resources/reduce.png}
+}{
+  \begin{itemizec}
+    \item $|input| = (d_1, d_2, \dots, d_k)$
+    \item $dims$ is a tuple or a list, and $\forall elt \in dims$, $-k \leq elt
+    < k$.
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = |input|$
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      c' = \{ (\forall elt \in dims,\: -\op{rank}{e} \leq dim < \op{rank}{e}) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{flip}{E, dims} \Rar e, c \cup c'
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
+
 
 \section*{Broadcasted Shape, Binary Operators}
 All these builtin functions \texttt{torch.*} are used with

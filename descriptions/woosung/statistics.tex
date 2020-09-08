@@ -716,4 +716,42 @@ torch.std(input, dim, unbiased=True, keepdim=False, out=None)}{
   \tag*{tuple 형태로 반환}
 \end{align*}
 
+
+
+\subsection*{\texttt{torch.sort}}
+\prepostc{torch.sort(input, dim=-1, descending=False, out=None)}{
+  %\includegraphics[height=8em]{resources/reduce.png}
+}{
+  \begin{itemizec}
+    \item $|input| = (d_1, d_2, \dots, d_k)$
+    \item $dim = -1$ or $-k \leq dim < k$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = |z| = (d_1, d_2, \dots, d_k) = |input|$인 $(y, z)$
+    튜플 반환
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $dim$ 축을 기준으로 원소를 정렬
+    \item $(y, z)$에서 $y$는 정렬된 텐서, $z$는 인덱스 텐서로 원본 $input$
+    텐서와 shape이 서로 같다.
+    \item $out$-텐서 옵션이 있는 함수
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      c' = \{ (dim = -1 \lor -\op{rank}{e} \leq dim < \op{rank}{e}) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{sort}{E, dim=-1, descending=False, out=None} \Rar (e, e),
+      c \cup c'
+  }
+  \tag*{tuple 형태로 반환}
+\end{align*}
+
 \end{document}

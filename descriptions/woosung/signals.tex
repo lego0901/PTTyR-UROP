@@ -320,4 +320,52 @@ beta=0.46, dtype=None,layout=torch.strided, device=None, requires\_grad=False)}{
   }
 \end{align*}
 
+
+\subsection*{\texttt{torch.bilinear}, \texttt{torch.nn.functional.bilinear}}
+\prepostc{torch.nn.functional.bilinear(input1, input2, weight, bias=None)}{
+  %\includegraphics[height=11em]{resources/diag.png}
+}{
+  \begin{itemizec}
+    \item $|input_1| = (d_1, d_2, \dots, d_m, h_1)$
+    \item $|input_2| = (d_1, d_2, \dots, d_m, h_2)$
+    \begin{itemize}
+      \item Same ranks with $\mtt{rank} \geq 1$ and
+      \item for all $i \in \{1, 2, \dots, m\}$, $|input_1|[i] = |input_2|[i]$
+    \end{itemize}
+    \item $|weight| = (s, h_1, h_2)$
+    \item $bias$ is $None$ or $|bias| = (s)$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = (d_1, d_2, \dots, d_m, s)$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item 특이사항으로 \texttt{torch.nn.functional.bilinear}에서는
+    \texttt{bias}의 기본값이 $None$으로 설정되어있지만,
+    \texttt{torch.bilinear}에서는 그렇지 않아서 무조건 값을 넣어줘야합니다.
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E_1 \Rar e_1, c_1 \\
+      \sigma \vdash E_2 \Rar e_2, c_2 \\
+      \sigma \vdash W \Rar w, c_w \\
+      \sigma \vdash B \Rar b, c_b \bigspace \text{if $B$ is not $None$, otherwise $c_b = \emptyset$} \\
+      c_{dim} = \{ (\op{rank}{e_1} = \op{rank}{e_2}) \land (\op{rank}{e_1} \geq 1)
+        \land (\op{rank}{w} = 3) \} \\
+      k = \op{rank}{e_1} \\
+      c_{prefix} = \{ (\forall i \in \{1, 2, \dots, k-1\}, e_1[i] = e_2[i]) \} \\
+      c_{suffix} = \{ (e_1[k] = w[2]) \land (e_2[k] = w[3]) \land (B = None \lor b = (w[1])) \} \\
+      e' = e_1\indr{1}{k-1} \conc (w[1])
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{bilinear}{E_1, E_2, W, B=None}
+      \Rar e', c \cup c_{dim} \cup c_{prefix} \cup c_{suffix}
+  }
+\end{align*}
+
 \end{document}

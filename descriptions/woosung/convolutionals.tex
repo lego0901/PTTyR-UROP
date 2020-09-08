@@ -366,6 +366,64 @@ padding\_mode=`zeros')(x)}{
   수 있음}
 \end{align*}
 
+
+\section*{Folding}
+\subsection*{\ttt{torch.nn.functional.unfold}}
+\prepostc{torch.nn.functional.unfold(input, kernel\_size, dilation=1, padding=0,
+stride=1)}{
+  %\includegraphics[height=12em]{resources/conv2d.png}
+}{
+  \begin{itemizec}
+    \item $|input| = (N, C, d_0, d_1)$\bigspace ($rank = 4$)
+    \item $d_0 + 2 \x padding[0] - dilation[0] \x (kernel\_size[0] - 1) - 1 \geq
+    0$
+    \item $d_1 + 2 \x padding[1] - dilation[1] \x (kernel\_size[1] - 1) - 1 \geq
+    0$
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $|y| = (N, C \x kernel\_size[0] \x kernel\_size[1], h \x w)$ where.. refers to the proof tree.
+  \end{itemizec}
+}{
+  \begin{itemizec}
+    \item $kernel\_size$, $stride$와 같은 옵션은 튜플로 구성될 수도 있습니다.
+    (가로 세로에 대한 필터크기가 서로 다르도록) 이 경우를 위하여 proof 트리에서
+    $kernel\_size[0], [1]$과 같은 표기를 사용하였습니다. 튜플이 아니라 스칼라
+    입력인 경우, $kernel\_size[0], [1]$은 모두 $kernel\_size$와 같습니다.
+    \item \texttt{torch.unfold}는 없고 \texttt{torch.nn.functional.unfold}로 쓸
+    수 있습니다.
+  \end{itemizec}
+}
+\begin{align*}
+  \frac
+  {
+    \begin{array}{l}
+      \sigma \vdash E \Rar e, c \\
+      h = \left\lfloor \frac{e[3] + 2 \x padding \ind{0} - dilation \ind{0}
+        \x (kernel\_size \ind{0} - 1) - 1}{stride \ind{0}} \right\rfloor + 1 \\
+      w = \left\lfloor \frac{e[4] + 2 \x padding \ind{1} - dilation \ind{1}
+        \x (kernel\_size \ind{1} - 1) - 1}{stride \ind{1}} \right\rfloor + 1 \\
+      e' = (e[1], e[2] \x kernel\_size[0] \x kernel\_size[1], h \cdot w) \\
+      c_{dim} = \{ (\op{rank}{e} = 4) \} \\
+      c_h = \{ (e[3] + 2 \x padding[0] - dilation[0] \x (kernel\_size[0] - 1) -
+      1 \geq 0) \}\\
+      c_w = \{ (e[4] + 2 \x padding[1] - dilation[1] \x (kernel\_size[1] - 1) -
+      1 \geq 0) \}
+    \end{array}
+  }
+  {
+    \sigma \vdash \op{unfold}{E, kernel\_size, dilation=1, padding=0, stride=1}
+      \Rar e', c \cup c_{dim} \cup c_h \cup c_w
+  } \\
+  \\
+  \text{$kernel\_size, stride, padding, dilation$는 가로-세로별 2-tuple로도 들어갈
+  수 있음} \\
+  \text{이 경우를 위해 $stride\ind{0}, stride\ind{1}$으로 표기함} \\
+  \text{만일 $stride$가 튜플이 아닌 스칼라라면 $stride\ind{0}$ 또는 $\ind{1}$은
+    $stride$ 값 자체를 의미}
+\end{align*}
+
+
 \section*{Activations}
 \subsection*{\texttt{torch.nn.MaxPool2d}}
 \prepostc{torch.nn.MaxPool2d(kernel\_size, stride=kernel\_size,
